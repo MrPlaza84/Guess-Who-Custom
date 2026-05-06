@@ -1,0 +1,932 @@
+/* CSS styling common across the site */
+
+@font-face {
+  font-family: 'm6x11medium';
+  src        : url('fonts/m6x11-webfont.woff2') format('woff2'), url('fonts/m6x11-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style : normal;
+}
+
+/* Global styling */
+
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  image-rendering : pixelated;
+  background-color: #FFFFFF00;
+}
+
+:root,
+select,
+option,
+textarea {
+  color      : white;
+  font-family: "m6x11medium", "Courier New", monospace;
+  font-size  : 32px;
+}
+
+body {
+  min-height: 100vh;
+  margin    : 0;
+
+  display        : flex;
+  flex-direction : column;
+  justify-content: stretch;
+  align-items    : center;
+
+  cursor: url('img/sCursor.png'), auto;
+
+  background-color     : #000000;
+  background-attachment: fixed;
+  background-image     :
+    url('img/bg1.png'),
+    url('img/bg2.png');
+  background-position:
+    0px 0px,
+    72px 0px;
+  background-size: 94px;
+  animation      : 2.67s linear infinite bg-slide;
+}
+
+@keyframes bg-slide {
+  from {
+    background-position:
+      0px 0px,
+      72px 0px;
+  }
+
+  to {
+    background-position:
+      -186px -186px,
+      165px 93px;
+  }
+}
+
+[lookup-mode='mouse'] body {
+  cursor: url('img/sCursorSearch.png'), help;
+}
+
+/* Styling for common elements */
+
+div {
+  margin : 0;
+  padding: 0;
+}
+
+p {
+  padding    : 0;
+  margin     : 0 0 0.5rem 0;
+  line-height: 1.125rem;
+}
+
+h1 {
+  font-size  : 3rem;
+  font-weight: normal;
+  margin     : 0 0 1.5rem 0;
+}
+
+h2 {
+  font-size  : 2.5rem;
+  font-weight: normal;
+  margin     : 0 0 1.25rem 0;
+}
+
+h3 {
+  font-size  : 2rem;
+  font-weight: normal;
+  margin     : 0 0 1rem 0;
+}
+
+h4 {
+  font-size  : 1.5rem;
+  font-weight: normal;
+  margin     : 0 0 0.75rem 0;
+}
+
+a {
+  text-decoration: none;
+  color          : inherit;
+}
+
+a:focus-visible {
+  color  : yellow;
+  outline: none;
+}
+
+a:hover {
+  cursor         : url('img/sCursorHand.png'), pointer;
+  text-decoration: underline;
+}
+
+a[target="_blank"] {
+  text-decoration: underline;
+  color          : cyan;
+}
+
+a[target="_blank"]:hover {
+  text-decoration: none;
+}
+
+input[type="text"],
+button {
+  border        : 0.25rem solid grey;
+  padding       : 0.5rem;
+  padding-bottom: 0.25rem;
+
+  font-family: "m6x11medium", "Courier New", monospace;
+  text-align : center;
+}
+
+input[type="text"] {
+  width: min(20rem, 95%);
+
+  background-color: #FFFFFF00 !important;
+  color           : white;
+  font-size       : 2rem;
+}
+
+button {
+  margin       : 1rem;
+  padding-left : 1.5rem;
+  padding-right: 1.5rem;
+
+  background-color: black;
+  color           : grey;
+  font-size       : 1.5rem;
+}
+
+button.small {
+  margin      : 0.5rem;
+  padding     : 0.25rem 0.5rem;
+  font-size   : 0.75rem;
+  border-width: 0.125rem;
+}
+
+button:hover {
+  cursor         : url('img/sCursorHand.png'), pointer;
+  text-decoration: underline;
+}
+
+button:focus-visible {
+  border-color: yellow;
+  color       : yellow;
+  outline     : none;
+}
+
+button:active {
+  border-color: white;
+  color       : white
+}
+
+input[type="checkbox"] {
+  width           : 0.75rem;
+  height          : 0.75rem;
+  border          : 4px solid grey;
+  appearance      : none;
+  background-color: black;
+  outline         : none;
+  transform       : translateY(4px);
+}
+
+input[type="checkbox"]:checked::before {
+  position   : absolute;
+  left       : 3px;
+  top        : -3px;
+  margin     : 0;
+  content    : "x";
+  font-size  : 0.75rem;
+  color      : white;
+  font-family: "m6x11medium", "Courier New", monospace;
+}
+
+label:has(>input[type="checkbox"]) {
+  color: grey;
+}
+
+input[type="checkbox"]:checked {
+  border-color: white;
+}
+
+label:has(>input[type="checkbox"]:checked) {
+  color: white;
+}
+
+input[type="checkbox"]:focus-visible {
+  border-color: yellow;
+}
+
+input[type="checkbox"]:checked:focus-visible::before {
+  color: yellow;
+}
+
+label:has(>input[type="checkbox"]:focus-visible) {
+  color: yellow;
+}
+
+input[type="text"]:is(:focus-visible) {
+  outline: none;
+}
+
+ul>li label:is(:focus-visible) {
+  outline: none;
+  color  : yellow;
+}
+
+ul>li label:is(:focus-visible)+select {
+  border-color: yellow;
+}
+
+ul>li,
+ol>li {
+  margin-bottom: 0.5rem;
+}
+
+ul>li a:is(:focus-visible)::before,
+ul>li label:is(:focus-visible)::before {
+  content     : url("img/sHeart_0.png");
+  margin-left : -0.75rem;
+  margin-right: 0.125rem;
+}
+
+:not(li)>a:focus-visible::before {
+  content: url("img/sHeart_0.png");
+}
+
+select,
+option,
+dialog,
+textarea {
+  background-color: black;
+}
+
+select {
+  padding   : 2px;
+  margin-top: -2px;
+}
+
+dialog {
+  border: 4px solid white;
+  width : 90%;
+  height: 90%;
+}
+
+textarea {
+  line-height: 1.125rem;
+}
+
+/* Styling modifiers */
+
+@media (max-width: 800px) {
+  .big-screen-only {
+    display: none !important;
+  }
+}
+
+@media (min-width: 801px) {
+  .small-screen-only {
+    display: none !important;
+  }
+}
+
+.hidden {
+  display: none !important;
+}
+
+.small-text {
+  font-size: 0.5rem !important;
+}
+
+.grey-text {
+  color: grey !important;
+}
+
+.yellow-text {
+  color: yellow !important;
+}
+
+.red-text {
+  color: red !important;
+}
+
+.no-margin {
+  margin: 0 !important;
+}
+
+.small-bottom-margin {
+  margin-bottom: 0.25rem !important;
+}
+
+.no-bottom-margin {
+  margin-bottom: 0 !important;
+}
+
+.med-top-margin {
+  margin-top: 1rem !important;
+}
+
+.center-container {
+  display        : flex;
+  flex-direction : column;
+  justify-content: start;
+  align-items    : center;
+}
+
+.no-marker {
+  list-style-type: none !important;
+}
+
+/* Styling for general items */
+
+.max-width-box {
+  padding: 0;
+  margin : 0;
+  flex   : auto;
+  height : 100%;
+  width  : min(1600px, 95vw);
+
+  display        : flex;
+  flex-direction : column;
+  justify-content: stretch;
+}
+
+.max-width-box>* {
+  flex : auto;
+  width: 100%;
+}
+
+/* Name scene */
+
+#name-scene {
+  display        : flex;
+  flex-direction : column;
+  justify-content: space-between;
+  align-items    : center;
+}
+
+#name-input-label {
+  display       : flex;
+  flex-direction: column;
+}
+
+#name-input-label>* {
+  text-align: center;
+}
+
+#name-confirm {
+  align-self: flex-end;
+}
+
+/* Menu scene */
+
+.max-width-box:has(>#menu-scene:not(.hidden)) {
+  max-width: min(1200px, 95vw);
+}
+
+#menu-scene {
+  padding        : 1rem 0;
+  align-self     : flex-start;
+  display        : flex;
+  flex-direction : column;
+  justify-content: space-between;
+  align-items    : flex-start;
+}
+
+#menu-top-left {
+  display        : flex;
+  flex-direction : column;
+  justify-content: flex-start;
+  align-items    : flex-start;
+}
+
+#menu-top-left>p {
+  margin-left: 0.25rem;
+}
+
+#menu-logo {
+  width        : 292px;
+  margin-bottom: 0.5rem;
+}
+
+#menu-options {
+  width          : 100%;
+  display        : flex;
+  flex-direction : row-reverse;
+  justify-content: space-between;
+  align-items    : top;
+}
+
+#menu-options-config {
+  text-align: right;
+}
+
+#menu-spoiler-warning {
+  max-width: 17.5rem;
+}
+
+@media (max-width: 800px) {
+  #menu-options {
+    flex-direction : column;
+    justify-content: flex-start;
+    align-items    : flex-start;
+  }
+
+  #menu-options-config {
+    text-align: left;
+  }
+}
+
+/* Game scene */
+
+:root {
+  --heart-scale: 3;
+  --heart-width: calc(var(--heart-scale) * 20px);
+
+  --card-scale     : 2;
+  --your-char-scale: 2;
+
+  --card-base-img-width   : 40px;
+  --card-base-img-height  : 64px;
+  --card-base-border-width: 2px;
+  --card-base-column-gap  : 8px;
+  --card-base-row-gap     : 4px;
+
+  --card-img-width   : calc(var(--card-scale) * var(--card-base-img-width));
+  --card-border-width: calc(var(--card-scale) * var(--card-base-border-width));
+  --card-column-gap  : calc(var(--card-scale) * var(--card-base-column-gap));
+  --card-frame-width : calc(var(--card-img-width) + 2 * var(--card-border-width));
+  --card-column-width: calc(var(--card-frame-width) + var(--card-column-gap));
+
+  --card-img-height  : calc(var(--card-scale) * var(--card-base-img-height));
+  --card-row-gap     : calc(var(--card-scale) * var(--card-base-row-gap));
+  --card-frame-height: calc(var(--card-img-height) + 2 * var(--card-border-width));
+  --card-row-height  : calc(var(--card-frame-height) + var(--card-row-gap));
+
+  --inspect-scale: 3;
+}
+
+#game-scene {
+  padding        : 0.5rem 0;
+  width          : 100%;
+  display        : flex;
+  justify-content: space-around;
+  align-items    : stretch;
+  column-gap     : 1rem;
+}
+
+@media (max-width: 800px) {
+  #game-scene {
+    flex-direction : column;
+    justify-content: flex-start;
+    align-items    : center;
+  }
+}
+
+#game-lookup-cursor {
+  display : none;
+  position: absolute;
+  z-index : 5;
+}
+
+[lookup-mode='key'] #game-lookup-cursor {
+  display: block;
+}
+
+#game-notes-dialog[open] {
+  display        : flex;
+  flex-direction : column;
+  justify-content: stretch;
+}
+
+#game-notes {
+  flex      : 1 0 auto;
+  align-self: stretch;
+}
+
+#game-notes-close {
+  flex      : none;
+  align-self: flex-end;
+}
+
+#game-info-panel {
+  display        : flex;
+  flex-direction : column;
+  justify-content: space-between;
+  align-items    : center;
+}
+
+#game-top-buttons {
+  display        : flex;
+  flex-direction : row;
+  justify-content: center;
+  flex-wrap      : wrap;
+  gap            : 0.25rem;
+}
+
+[lookup-mode='mouse'] .game-lookup,
+[lookup-mode='key'] .game-lookup {
+  border-color: yellow;
+  color       : yellow;
+  cursor      : url('img/sCursorSearch.png'), help;
+}
+
+[lookup-mode='mouse'] .game-lookup {
+  cursor: url('img/sCursorSearch.png'), help;
+}
+
+#small-screen-name-display {
+  padding-top: 1rem;
+}
+
+#small-screen-buttons {
+  padding-bottom: 1rem;
+}
+
+#your-char-name {
+  max-width : 10rem;
+  text-align: center;
+}
+
+#your-char-img-frame {
+  position: relative;
+}
+
+#your-char-img-frame,
+.inspect-img-frame {
+  border: calc(var(--your-char-scale) * var(--card-border-width)) solid white;
+  width : calc(var(--your-char-scale) * (var(--card-img-width) + 2 * var(--card-border-width)));
+  height: calc(var(--your-char-scale) * (var(--card-img-height) + 2 * var(--card-border-width)));
+
+  display        : flex;
+  justify-content: center;
+  align-items    : center;
+}
+
+[lookup-mode='mouse'] #your-char-img-frame {
+  cursor: url('img/sCursorSelect.png'), help;
+}
+
+.character-card:not(.inspect, .inspect-fading) .inspect-img-frame {
+  display: none;
+}
+
+.inspect-img-frame {
+  position : absolute;
+  top      : calc(2 * var(--card-base-row-gap) - 0.5 * var(--card-row-height));
+  z-index  : 4;
+  animation: 0.125s ease-out 1 grow;
+  cursor   : url('img/sCursorHand.png'), pointer;
+  scale    : calc(0.5 * var(--inspect-scale));
+}
+
+[lookup-mode='true'] .inspect-img-frame {
+  cursor: url('img/sCursorSelect.png'), help;
+}
+
+.character-img-frame:focus-visible+.inspect-img-frame {
+  border-color: yellow;
+}
+
+@keyframes grow {
+  from {
+    scale: 50%;
+  }
+
+  to {
+    scale: calc(var(--inspect-scale)*50%);
+  }
+}
+
+.character-card.inspect-fading .inspect-img-frame {
+  scale    : 50%;
+  animation: 0.125s ease-in 1 shrink;
+}
+
+@keyframes shrink {
+  from {
+    scale: calc(var(--inspect-scale)*50%);
+  }
+
+  to {
+    scale: 50%;
+  }
+}
+
+#your-char-img-frame img,
+.character-img-frame img {
+  z-index: -1;
+}
+
+.inspect-img-frame img {
+  z-index: 4;
+}
+
+#your-char-img-frame .bg,
+.character-img-frame .bg,
+.inspect-img-frame .bg {
+  position        : absolute;
+  top             : 0;
+  left            : 0;
+  width           : 100%;
+  height          : 100%;
+  z-index         : -2;
+  background-color: black;
+}
+
+.inspect-img-frame .bg {
+  z-index: 3;
+}
+
+#guesses-display {
+  align-self: stretch;
+}
+
+#guesses-line {
+  margin-bottom  : 0.5rem;
+  align-self     : center;
+  width          : 10rem;
+  display        : flex;
+  justify-content: center;
+  flex-wrap      : wrap;
+}
+
+.guess-icon {
+  display: inline-block;
+}
+
+.guess-icon:not(:focus-visible) {
+  padding: 2px;
+}
+
+.guess-icon:focus-visible {
+  outline: none;
+  border : 2px solid yellow;
+}
+
+.guess-icon:hover {
+  cursor: url('img/sCursorHand.png'), pointer;
+}
+
+.guess-icon img {
+  width: var(--heart-width);
+}
+
+.guess-icon.active .inactive-icon {
+  display: none;
+}
+
+.guess-icon.inactive .active-icon {
+  display: none;
+}
+
+#game-cards-panel {
+  max-width      : 1040px;
+  flex           : 1 0 auto;
+  display        : flex;
+  flex-direction : column;
+  justify-content: space-between;
+  align-items    : stretch;
+}
+
+@media (max-width: 800px) {
+  #game-cards-panel {
+    padding   : 0 1rem;
+    align-self: stretch;
+  }
+}
+
+#cards-top-line {
+  display        : flex;
+  justify-content: space-between;
+  align-items    : center;
+}
+
+#card-grid {
+  display              : grid;
+  grid-template-columns: repeat(auto-fill, var(--card-column-width));
+  gap                  : 0;
+}
+
+.character-card {
+  position       : relative;
+  width          : var(--card-column-width);
+  height         : var(--card-row-height);
+  display        : flex;
+  justify-content: center;
+  align-items    : center;
+}
+
+.character-name-popup {
+  position : absolute;
+  bottom   : var(--card-row-height);
+  z-index  : 2;
+  padding  : 0.0625rem 0.5rem 0rem 0.5rem;
+  max-width: 10rem;
+
+  border-width    : var(--card-border-width);
+  border-style    : solid;
+  background-color: black;
+  font-size       : 0.75rem;
+  text-align      : center;
+}
+
+.character-name-popup p {
+  line-height: 1rem;
+}
+
+.character-card:not(.steady-popup) .character-name-popup {
+  animation: 0.125s linear 1 popup;
+}
+
+@keyframes popup {
+  from {
+    scale : 0%;
+    bottom: calc(-1rem + var(--card-row-height));
+  }
+
+  to {
+    scale : 100%;
+    bottom: var(--card-row-height);
+  }
+}
+
+.character-name-popup:not(:has(+.character-img-frame:hover,
+    +*+.inspect-img-frame:hover, +.character-img-frame:focus-visible)) {
+  display: none;
+}
+
+.character-card.inspect .character-name-popup {
+  animation: 0.125s ease-out 1 shift-up;
+  scale    : calc(var(--inspect-scale) * 100%);
+  bottom   : calc((0.25 + 0.75 * var(--inspect-scale)) * var(--card-row-height));
+}
+
+@keyframes shift-up {
+  from {
+    scale : 100%;
+    bottom: calc(1.0 * var(--card-row-height));
+  }
+
+  to {
+    scale : calc(var(--inspect-scale) * 100%);
+    bottom: calc((0.25 + 0.75 * var(--inspect-scale)) * var(--card-row-height));
+  }
+}
+
+.character-card.inspect-fading .character-name-popup {
+  animation: 0.125s ease-in 1 shift-down;
+  scale    : 100%;
+  bottom   : calc(1.0 * var(--card-row-height));
+}
+
+@keyframes shift-down {
+  from {
+    scale : calc(var(--inspect-scale) * 100%);
+    bottom: calc((0.25 + 0.75 * var(--inspect-scale)) * var(--card-row-height));
+  }
+
+  to {
+    scale : 100%;
+    bottom: calc(1.0 * var(--card-row-height));
+  }
+}
+
+.character-img-frame {
+  position: relative;
+
+  width       : var(--card-frame-width);
+  height      : var(--card-frame-height);
+  border-width: var(--card-border-width);
+  border-style: solid;
+
+  display        : flex;
+  justify-content: center;
+  align-items    : center;
+
+  cursor: url('img/sCursorHand.png'), pointer;
+}
+
+[lookup-mode='mouse'] .character-img-frame {
+  cursor: url('img/sCursorSelect.png'), help;
+}
+
+.character-img-frame,
+.character-name-popup {
+  border-color: white;
+}
+
+.character-img-frame:focus-visible,
+.character-card:has(.character-img-frame:focus-visible) .character-name-popup {
+  border-color: yellow;
+  outline     : none;
+}
+
+.marked .character-img-frame,
+.marked .character-name-popup {
+  border-color: purple;
+}
+
+.unmarked .character-img-frame .character-question-marker {
+  display: none;
+}
+
+.character-question-marker {
+  position: absolute;
+  top     : 0;
+  right   : 0;
+
+  width : 0.625rem;
+  height: 0.625rem;
+
+  background-color: purple;
+}
+
+.character-question-icon {
+  padding-top: 2px;
+  color      : white;
+  font-size  : 0.5rem;
+  text-align : center;
+}
+
+.inactive .character-img-frame {
+  filter: brightness(0.1) saturate(0);
+}
+
+.inactive .character-img-frame:hover,
+.inactive .character-img-frame:focus-visible,
+.inactive .character-name-popup {
+  filter: brightness(0.3);
+}
+
+#card-panel-buttons {
+  display        : flex;
+  justify-content: flex-end;
+  gap            : 1rem;
+}
+
+/* Instructions scene */
+
+#instructions-scene {
+  padding: 1rem 0;
+}
+
+/* Controls scene */
+
+#controls-scene {
+  padding   : 1rem 0;
+  align-self: center;
+  max-width : 735px;
+}
+
+#controls-grid {
+  display              : grid;
+  grid-template-columns: 1fr 2fr;
+  row-gap              : 1rem;
+  column-gap           : 1rem;
+}
+
+#controls-grid .left-column {
+  text-align: right;
+  color     : yellow;
+}
+
+/* Credits scene */
+
+#credits-scene {
+  padding   : 1rem 0;
+  align-self: center;
+
+  display        : flex;
+  flex-direction : column;
+  justify-content: space-between;
+  gap            : 1rem;
+}
+
+.credits-item {
+  max-width      : max-content;
+  display        : flex;
+  justify-content: flex-start;
+  gap            : 0.5rem;
+}
+
+.credits-item:nth-child(even) {
+  align-self    : flex-start;
+  flex-direction: row;
+}
+
+.credits-item:nth-child(odd) {
+  align-self    : flex-end;
+  flex-direction: row-reverse;
+}
+
+.credits-item img {
+  flex         : 0 0 auto;
+  width        : 5rem;
+  height       : 5rem;
+  border-radius: 1rem;
+}
+
+#credits-back {
+  align-self: flex-end;
+}
