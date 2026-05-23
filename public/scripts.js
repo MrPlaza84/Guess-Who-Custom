@@ -707,6 +707,7 @@ let numImagesLoading = 0;
 
 // The player's character for the current game
 let yourCharIndex = null;
+let lastGuessToggleTime = 0;
 
 // Functions
 // ---------
@@ -954,36 +955,36 @@ async function loadCharacterSet(setName) {
   // Clear any present character cards
   document.querySelectorAll(".character-card").forEach((el) => el.remove());
 
-  // Check through the names of character images to determine how they should be sorted
-  const lSortedChars = [];
-  const lUnsortedChars = [];
+  // Group character image names by index prefix so multiple images with the same index become variants
+  const indexedMap = {};
+  const unsortedList = [];
 
   lCharImageNames.forEach((charImgName) => {
     // Check if this name starts with an index
-    let i = parseInt(charImgName.split("-")[0]);
-    if ((i === NaN) || (!charImgName.startsWith(i.toString()))) {
-      // Doesn't appear to start with an index, so add it to the unsorted list
-      lUnsortedChars.push({ imgName: charImgName.replace(" ", "%20"), name: charImgName.replace(".png", "") });
-      return;
+    const parts = charImgName.split("-");
+    const maybeIndex = parseInt(parts[0]);
+    if (!isNaN(maybeIndex) && charImgName.startsWith(maybeIndex.toString())) {
+      if (!indexedMap[maybeIndex]) indexedMap[maybeIndex] = [];
+      indexedMap[maybeIndex].push(charImgName);
+    } else {
+      unsortedList.push(charImgName);
     }
-
-    // This appears to be indexed
-    let charInfo = { imgName: charImgName.replace(" ", "%20"), name: charImgName.replace(i + "-", "").replace(".png", "") };
-
-    // Make sure it can fit into the sorted list and isn't already present
-    if (i > lSortedChars.length - 1)
-      lSortedChars.length = i + i;
-    if (lSortedChars[i] !== undefined) {
-      // This index is already in the list, so log an error and add it to the unsorted list
-      console.error("More than one character has the index " + i + ". Sorting will not appear as intended.");
-      lUnsortedChars.push(charInfo);
-      return;
-    }
-    lSortedChars[i] = charInfo;
   });
 
-  // Get the info for each character
-  const lAllChars = [...lSortedChars, ...lUnsortedChars];
+  // Build the final list preserving index order
+  const lAllChars = [];
+  const maxIndex = Object.keys(indexedMap).reduce((m, k) => Math.max(m, parseInt(k)), -1);
+  for (let i = 0; i <= maxIndex; ++i) {
+    if (indexedMap[i]) {
+      // Create a single char entry with variants
+      const variants = indexedMap[i].map((img) => ({ imgName: img.replace(" ", "%20"), label: img.replace(i + "-", "").replace(/\.png$|\.jpg$/i, "") }));
+      // Use the label of the first variant as the character's displayed name
+      const name = variants[0].label;
+      lAllChars.push({ name: name, variants: variants });
+    }
+  }
+  // Append unsorted (non-indexed) items after the indexed ones
+  unsortedList.forEach((img) => lAllChars.push({ imgName: img.replace(" ", "%20"), name: img.replace(/\.png$|\.jpg$/i, "") }));
   lCharInfo = [];
   const inspectImgScale = window.getComputedStyle(YOUR_CHAR_IMG).getPropertyValue('--your-char-scale');
   lAllChars.forEach((charInfo) => {
@@ -1017,9 +1018,14 @@ async function loadCharacterSet(setName) {
       updateLoadingPercent();
     }
 
+    // Ensure imgName is set for characters that have variants
+    if (charInfo.variants && charInfo.variants.length > 0) {
+      if (typeof charInfo.selectedVariant === "undefined")
+        charInfo.selectedVariant = 0;
+      charInfo.imgName = charInfo.variants[charInfo.selectedVariant].imgName;
+    }
     imgEl.setAttribute("src", charsetPath + "/" + charInfo.imgName);
     inspectImgEl.setAttribute("src", charsetPath + "/" + charInfo.imgName);
-
     const frameEl = newCard.querySelector(".character-img-frame");
     frameEl.addEventListener("click", flipCard);
     frameEl.addEventListener("dblclick", markCard);
@@ -1055,6 +1061,57 @@ async function loadCharacterSet(setName) {
       }
     }, false);
 
+    // Design/variant selection: if this character has variants, populate the dropdown with them
+    const designButton = newCard.querySelector(".design-button");
+    const designDropdown = newCard.querySelector(".design-dropdown");
+    const designContainer = newCard.querySelector(".design-select-container");
+    const cardEl = newCard;
+    if (charInfo.variants && charInfo.variants.length > 1) {
+      // populate dropdown options from variants
+      charInfo.variants.forEach((v, i) => {
+        const option = document.createElement("button");
+        option.type = "button";
+        option.className = "design-option";
+        option.textContent = v.label;
+        if (i === charInfo.selectedVariant) option.classList.add("active");
+        designDropdown.appendChild(option);
+
+        option.addEventListener("click", () => {
+          applyVariant(i);
+          designDropdown.classList.add("hidden");
+          // update active state
+          designDropdown.querySelectorAll(".design-option").forEach((opt) => opt.classList.remove("active"));
+          option.classList.add("active");
+        });
+      });
+      designContainer.classList.remove("hidden");
+
+      const applyVariant = (variantIndex) => {
+        variantIndex = +variantIndex;
+        if (!charInfo.variants[variantIndex]) return;
+        charInfo.selectedVariant = variantIndex;
+        charInfo.imgName = charInfo.variants[variantIndex].imgName;
+        // update both displays
+        imgEl.setAttribute("src", charsetPath + "/" + charInfo.imgName);
+        inspectImgEl.setAttribute("src", charsetPath + "/" + charInfo.imgName);
+      };
+
+      // Toggle dropdown on button click
+      designButton.addEventListener("click", (e) => {
+        e.stopPropagation();
+        designDropdown.classList.toggle("hidden");
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener("click", (e) => {
+        if (!cardEl.contains(e.target)) {
+          designDropdown.classList.add("hidden");
+        }
+      });
+    } else {
+      designContainer.classList.add("hidden");
+    }
+
     CARD_GRID.appendChild(newCard);
   });
 
@@ -1067,7 +1124,22 @@ async function loadCharacterSet(setName) {
  * @param {Event} e 
  */
 function flipGuess(e) {
-  const guessClassList = e.currentTarget.closest(".guess-icon").classList;
+  if (Date.now() - lastGuessToggleTime < 500)
+    return;
+
+  if (e.cancelable)
+    e.preventDefault();
+
+  let guessElement = e.currentTarget;
+  if (!guessElement) {
+    guessElement = e.target.closest(".guess-icon");
+  }
+  if (!guessElement) {
+    console.error("Could not find guess element");
+    return;
+  }
+  
+  const guessClassList = guessElement.classList;
 
   if (guessClassList.contains("active")) {
     guessClassList.remove("active");
@@ -1077,6 +1149,7 @@ function flipGuess(e) {
     guessClassList.remove("inactive");
   }
 
+  lastGuessToggleTime = Date.now();
   updateNumChars();
 }
 
@@ -1512,7 +1585,11 @@ GAME_NOTES_CLOSE.addEventListener("click", closeNotes);
 L_CONTROLS_BUTTONS.forEach((el) => el.addEventListener("click", () => switchScene(CONTROLS_SCENE)));
 L_INSTRUCTIONS_BUTTONS.forEach((el) => el.addEventListener("click", () => switchScene(INSTRUCTIONS_SCENE)));
 
-L_GUESS_ICONS.forEach((el) => el.addEventListener("click", flipGuess));
+L_GUESS_ICONS.forEach((el) => {
+  el.addEventListener("click", flipGuess);
+  el.addEventListener("pointerup", flipGuess);
+  el.addEventListener("touchend", flipGuess, { passive: false });
+});
 // Character cards are added dynamically, so the click event to flip them has to be added when they're added
 
 const gameSceneSwitchWatcher = new SceneSwitchWatcher(GAME_SCENE, initGameScene, exitGameScene);

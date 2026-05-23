@@ -653,6 +653,8 @@ textarea {
 
 .guess-icon {
   display: inline-block;
+  cursor: pointer;
+  touch-action: manipulation;
 }
 
 .guess-icon:not(:focus-visible) {
@@ -670,6 +672,7 @@ textarea {
 
 .guess-icon img {
   width: var(--heart-width);
+  pointer-events: none;
 }
 
 .guess-icon.active .inactive-icon {
@@ -890,6 +893,75 @@ textarea {
   text-align: right;
   color     : yellow;
 }
+
+/* Design selection UI */
+.design-select-container {
+  position: absolute;
+  top: var(--card-border-width);
+  right: var(--card-border-width);
+  z-index: 3;
+}
+.design-button {
+  background-color: black;
+  color: rgb(255, 255, 255);
+  border: 1px solid rgb(255, 255, 255);
+  padding: 0.125rem 0.25rem;
+  font-size: 0.5rem;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s;
+  min-width: auto;
+  margin: 0;
+}
+.design-button:hover {
+  background-color: #1a1a1a;
+  border-color: yellow;
+  color: yellow;
+}
+.design-button:focus-visible {
+  outline: none;
+  border-color: yellow;
+  color: yellow;
+}
+.design-dropdown {
+  position: absolute;
+  top: calc(100% - 1px);
+  right: 0;
+  background-color: black;
+  border: 1px solid rgb(255, 255, 255);
+  border-top: none;
+  min-width: 100px;
+  z-index: 4;
+}
+.design-dropdown.hidden {
+  display: none;
+}
+.design-option {
+  display: block;
+  width: 100%;
+  padding: 0.25rem 0.375rem;
+  background-color: black;
+  color: white;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 0.65rem;
+  font-family: "m6x11medium", "Courier New", monospace;
+  transition: all 0.15s;
+  margin: 0;
+}
+.design-option:hover {
+  background-color: #1a1a1a;
+  color: rgb(255, 255, 255);
+}
+.design-option.active {
+  background-color: #000000;
+  color: yellow;
+  border-left: 2px solid yellow;
+  padding-left: calc(0.5rem - 2px);
+}
+
+
 
 /* Credits scene */
 
